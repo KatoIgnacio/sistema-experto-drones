@@ -7,7 +7,26 @@ import json
 
 DB_PATH = Path(__file__).resolve().parent.parent / "data" / "cases.db"
 
+DDL = """
+PRAGMA journal_mode=WAL;
+CREATE TABLE IF NOT EXISTS cases (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT NOT NULL,
+    sintomas_json TEXT NOT NULL,
+    resultados_json TEXT NOT NULL,
+    top_diagnostico TEXT,
+    top_confianza REAL
+);
+CREATE INDEX IF NOT EXISTS idx_cases_created_at ON cases(created_at DESC);
+"""
+
+def _ensure_db():
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with sqlite3.connect(DB_PATH) as con:
+        con.executescript(DDL)
+
 def save_case(sintomas: List[str], resultados: List[Dict[str, Any]]) -> int:
+    _ensure_db()
     top = resultados[0] if resultados else None
     with sqlite3.connect(DB_PATH) as con:
         cur = con.cursor()
@@ -28,9 +47,9 @@ def save_case(sintomas: List[str], resultados: List[Dict[str, Any]]) -> int:
         return cur.lastrowid
 
 def list_cases(limit: int = 10) -> List[Dict[str, Any]]:
+    _ensure_db()
     with sqlite3.connect(DB_PATH) as con:
         con.row_factory = sqlite3.Row
         cur = con.cursor()
         cur.execute("SELECT * FROM cases ORDER BY created_at DESC LIMIT ?", (limit,))
-        rows = cur.fetchall()
-        return [dict(r) for r in rows]
+        return [dict(r) for r in cur.fetchall()]

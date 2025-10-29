@@ -1,0 +1,11 @@
+sintomas,nota
+"no_despega,pitidos_esc",No arm y pitidos al conectar bateria
+"deriva_al_despegar,vibraciones_fuertes","Deriva hacia adelante, vibracion notoria"
+"baja_autonomia,bateria_caliente",Vuela 3 min y aterriza forzado
+perdida_gps,No toma fix en exterior nublado
+"motor_no_gira,helice_danada",Motor delantero derecho atascado
+perdida_radio,Failsafe a 80 m
+"deriva_al_despegar,helice_danada",Despega y se va a la izquierda
+"vibraciones_fuertes,perdida_gps",Vibra y pierde fix
+baja_autonomia,Bateria usada 100 ciclos
+no_despega,No responde al throttle
